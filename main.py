@@ -21,12 +21,12 @@ def deep_sleep(msecs):
   # put the device to sleep
   machine.deepsleep()
 
-mqtt_server = '138.3.246.220'
-user = 'jezerca'
-passw = 'Password@2'
-client_id = 'esp8266'
-topic_t = 'esp8266_temp'
-topic_h = 'esp8266_humi'
+mqtt_server = '138.****0'
+user = 'j**ca'
+passw = '***'
+client_id = 'e***6'
+topic_t = '*****'
+topic_h = '****'
 def connect_and_subscribe():
   global client_id, mqtt_server
   client = MQTTClient(client_id, mqtt_server, user=user, password=passw)
