@@ -1,15 +1,20 @@
 
+
+import time
+from mqttsimple import MQTTClient
+from time import sleep
 import machine
 from machine import Pin
-from time import sleep
 import dht
-from umqttsimple import MQTTClient
+
+
 """
 "umqttsimple" library is installed from here: 
 https://raw.githubusercontent.com/RuiSantosdotme/ESP-MicroPython/master/code/MQTT/umqttsimple.py
 """
 led = Pin(2, Pin.OUT)
 sensor = dht.DHT22(Pin(14))
+
 def deep_sleep(msecs):
   # configure RTC.ALARM0 to be able to wake the device
   rtc = machine.RTC()
@@ -21,16 +26,27 @@ def deep_sleep(msecs):
   # put the device to sleep
   machine.deepsleep()
 
-mqtt_server = '138.****0'
-user = 'j**ca'
-passw = '***'
-client_id = 'e***6'
-topic_t = '*****'
-topic_h = '****'
+mqtt_server = '138.3.246.220'
+user = 'jezerca'
+passw = 'Password@2'
+client_id = 'esp8266'
+topic_t = 'esp8266_temp'
+topic_h = 'esp8266_humi'
+topic_sub = 'sleep'
+sleep_time = int(10000)
+
+def sub_cb(topic, msg):
+  global sleep_time
+  sleep_time = int(msg)
+  if topic == b'notification' and msg == b'received':
+    print('ESP received hello message')
+
 def connect_and_subscribe():
-  global client_id, mqtt_server
+  global client_id, mqtt_server, topic_sub
   client = MQTTClient(client_id, mqtt_server, user=user, password=passw)
+  client.set_callback(sub_cb)
   client.connect()
+  client.subscribe(topic_sub)
   return client
 
 def restart_and_reconnect():
@@ -45,7 +61,8 @@ except OSError as e:
 
 while True:
   try:
-    sleep(10)
+    sleep(20)
+    client.check_msg()
     sensor.measure()
     temp = sensor.temperature()
     hum = sensor.humidity()
@@ -59,7 +76,8 @@ while True:
     sleep(5)
     print('Going to deep sleep')
     #deep sleep command
-    deep_sleep(300000)
+    print(sleep_time)
+    deep_sleep(sleep_time)
 	
   except OSError as e:
     print('Failed to read sensor. Reconnecing...')
