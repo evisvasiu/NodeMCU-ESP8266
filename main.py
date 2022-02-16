@@ -27,8 +27,8 @@ def deep_sleep(msecs):
   machine.deepsleep()
 
 mqtt_server = '138.3.246.220'
-user = 'jezerca'
-passw = 'Password@2'
+user = 'je*****'
+passw = '*****'
 client_id = 'esp8266'
 topic_t = 'esp8266_temp'
 topic_h = 'esp8266_humi'
