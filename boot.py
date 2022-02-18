@@ -1,3 +1,4 @@
+
 import machine, onewire, ds18x20, time
 from mqttsimple import MQTTClient
 from time import sleep
@@ -9,11 +10,23 @@ import esp
 esp.osdebug(None)
 import gc
 gc.collect()
+sleep_time = int(10000)
+
+def deep_sleep(msecs):
+  # configure RTC.ALARM0 to be able to wake the device
+  rtc = machine.RTC()
+  rtc.irq(trigger=rtc.ALARM0, wake=machine.DEEPSLEEP)
+
+  # set RTC.ALARM0 to fire after X milliseconds (waking the device)
+  rtc.alarm(rtc.ALARM0, msecs)
+
+  # put the device to sleep
+  machine.deepsleep()
 
 led = Pin(2, Pin.OUT)
 
 ssid = 'Pixel5'
-password = 'ti***'
+password = 'tir***021'
 
 station = network.WLAN(network.STA_IF)
 ap_if = network.WLAN(network.AP_IF)
@@ -47,26 +60,14 @@ ds_sensor = ds18x20.DS18X20(onewire.OneWire(ds_pin))
 roms = ds_sensor.scan()
 print('Found DS devices: ', roms)
 
-def deep_sleep(msecs):
-  # configure RTC.ALARM0 to be able to wake the device
-  rtc = machine.RTC()
-  rtc.irq(trigger=rtc.ALARM0, wake=machine.DEEPSLEEP)
-
-  # set RTC.ALARM0 to fire after X milliseconds (waking the device)
-  rtc.alarm(rtc.ALARM0, msecs)
-
-  # put the device to sleep
-  machine.deepsleep()
-
-mqtt_server = '138.***0'
-user = 'jez**a'
-passw = 'Pas***2'
+mqtt_server = '13*46.220'
+user = 'je***ca'
+passw = '*'
 client_id = 'esp8266'
 topic_t = 'esp8266_temp'
 topic_h = 'esp8266_humi'
 topic_sub = 'sleep'
 topic_ds = 'ds18'
-sleep_time = int(10000)
 
 def sub_cb(topic, msg):
   global sleep_time
@@ -112,3 +113,4 @@ while True:
   except OSError as e:
     print('Failed to read sensor. Reconnecing...')
     restart_and_reconnect()
+
