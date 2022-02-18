@@ -13,7 +13,7 @@ gc.collect()
 led = Pin(2, Pin.OUT)
 
 ssid = 'Pixel5'
-password = 'tirana2021'
+password = 'ti***'
 
 station = network.WLAN(network.STA_IF)
 ap_if = network.WLAN(network.AP_IF)
@@ -58,9 +58,9 @@ def deep_sleep(msecs):
   # put the device to sleep
   machine.deepsleep()
 
-mqtt_server = '138.3.246.220'
-user = 'jezerca'
-passw = 'Password@2'
+mqtt_server = '138.***0'
+user = 'jez**a'
+passw = 'Pas***2'
 client_id = 'esp8266'
 topic_t = 'esp8266_temp'
 topic_h = 'esp8266_humi'
