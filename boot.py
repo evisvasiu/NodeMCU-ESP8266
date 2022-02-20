@@ -1,4 +1,5 @@
 
+
 import machine, onewire, ds18x20, time
 from mqttsimple import MQTTClient
 from time import sleep
@@ -25,8 +26,8 @@ def deep_sleep(msecs):
 
 led = Pin(2, Pin.OUT)
 
-ssid = 'Kabe*B6C'
-password = '802*562743'
+ssid = 'K*x-1B6C'
+password = '80*562743'
 
 station = network.WLAN(network.STA_IF)
 ap_if = network.WLAN(network.AP_IF)
@@ -48,6 +49,7 @@ while station.isconnected() == False:         #The time it is still disconected 
       #deep_sleep(sleep_time)                 #Going to deep sleep for a specified amount of time
     
 print('Connection successful')
+
 print(station.ifconfig())
 
 """
@@ -62,9 +64,9 @@ ds_sensor = ds18x20.DS18X20(onewire.OneWire(ds_pin))
 roms = ds_sensor.scan()
 print('Found DS devices: ', roms)
 
-mqtt_server = '13*220'
-user = 'j*ca'
-passw = 'P**2'
+mqtt_server = '138*.220'
+user = 'j*'
+passw = 'P*d@2'
 client_id = 'esp8266'
 topic_uv = 'uv'
 topic_t = 'dht22_temp'
@@ -88,9 +90,8 @@ def connect_and_subscribe():
 
 def restart_and_reconnect():
   print('Failed to connect to MQTT broker. Reconnecting...')
-  sleep(20)
+  sleep(10)
   machine.reset()
-
 try:
   client = connect_and_subscribe()
 except OSError as e:
@@ -99,7 +100,7 @@ except OSError as e:
 while True:
   try:
     led.value(1)
-    uv_volt = (uv.read()*3.3)/1023
+    uv_volt = (uv.read()*3300)/1023
     dht22.measure()             #dht22 read function
     temp = dht22.temperature()  #reading dht22 temp
     humi = dht22.humidity()     #reading dht22 humidity
@@ -109,11 +110,11 @@ while True:
     print('Temperature: %3.1f C' %temp)
     print('Humidity: %3.1f %%' %humi)
     msg_uv = b'%3.0f' %uv_volt
-    msg_temp = b'%3.0f' %temp   #saving dht22 value
-    msg_humi = b'%3.0f' %humi   #saving dht22 value
+    msg_temp = b'%3.1f' %temp   #saving dht22 value
+    msg_humi = b'%3.1f' %humi   #saving dht22 value
     for rom in roms:
       #print(rom)
-      print(ds_sensor.read_temp(rom))
+      print('DS18 Temperature: %3.1f C' %ds_sensor.read_temp(rom))
     msg_ds = b'%3.1f' %ds_sensor.read_temp(rom) #saving ds18 value
     client.publish(topic_uv, msg_uv)          #publish uv index
     client.publish(topic_t, msg_temp)           #publish dht temp
@@ -128,5 +129,6 @@ while True:
   except OSError as e:
     print('Failed to read sensor. Reconnecing...')
     restart_and_reconnect()
+
 
 
